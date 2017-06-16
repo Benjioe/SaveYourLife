@@ -45,7 +45,6 @@ class AuthController
   // POST
   public function postAction($request) {
     $pdo = new bdd();
-    return $request->parameters;
     if ((isset($request->parameters['id_client']) &&  $request->parameters['id_client'] != null)
     && (isset($request->parameters['cle']) &&  $request->parameters['cle'] != null)
     && (isset($request->parameters['token']) &&  $request->parameters['token'] != null)) {
@@ -53,13 +52,14 @@ class AuthController
       $id_client = $request->parameters['id_client'];
       $cle = $request->parameters['cle'];
       $token = $request->parameters['token'];
-      $pdo->create('INSERT INTO auth (id_client, cle, token) VALUES ( ' . $id_client . ',' . $cle . ',' . $token .')');
+      $sql = stripslashes("INSERT INTO auth (id_client, cle, token) VALUES ( \"" . $id_client . "\",\"" . $cle . "\",\"" . $token ."\")");
+      $pdo->create($sql);
+      return $sql;
       header("HTTP/1.1 200 Client created");
     } else {
-      $data = [];
       header("HTTP/1.1 404 Parameters error");
     }
-    return $data;
+    return [];
   }
 
 }
