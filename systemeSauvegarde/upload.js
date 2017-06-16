@@ -13,14 +13,22 @@ var crypto = require('crypto'),
 
 exports.upload = upload;
 
-function upload(password) {
+function upload(password, directory, token) {
   algorithm = 'aes-256-ctr';
 
   if(!password)
     password = 'd6F3Efeq';
 
+    if(!directory)
+      directory = '/home/fabien/Documents/test';
+
+      var directoryEncrypt = directory + '/encrypt';
 
 
+
+
+          if(!token)
+            token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
 
     //var token = '2UAT4hioqL58uTZK';
     //var token_secret = 'WHsuxVI4OHw2qmwO';
@@ -35,12 +43,12 @@ function upload(password) {
     console.log('Server running at http://localhost:3000/');
 
     // One-liner for current directory, ignores .dotfiles
-    chokidar.watch('/home/fabien/Documents/test', {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
+    chokidar.watch(directory, {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
       console.log(event);
       encryptFile(event);
     });
 
-    chokidar.watch('/home/fabien/Documents/test', {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
+    chokidar.watch(directory, {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
       console.log(event, path);
       encryptFile(event);
     });
@@ -75,7 +83,7 @@ function upload(password) {
       stream.on('finish', function(){
         //fs.chown('test.txt', 1000, 1000, console.log('fabien'));
         dropbox.authenticate({
-          token: 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie'
+          token: token
         });
 
         const dropboxUploadStream = dropbox({
@@ -87,7 +95,7 @@ function upload(password) {
           console.log(result);
         });
 
-        fs.createReadStream('/home/fabien/Documents/systemeSauvegarde/'+path.basename(pathFile)).pipe(dropboxUploadStream);
+        fs.createReadStream(directoryEncrypt +path.basename(pathFile)).pipe(dropboxUploadStream);
       });
 
 

@@ -13,12 +13,14 @@ var crypto = require('crypto'),
 exports.download = download;
 
 
-function download(password) {
+function download(password, token) {
   algorithm = 'aes-256-ctr';
 
   if(!password)
     password = 'd6F3Efeq';
 
+    if(!token)
+      token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
 
   http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -31,7 +33,7 @@ function download(password) {
   var dropboxDownload = function()
   {
     dropbox.authenticate({
-      token: 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie'
+      token: token
     });
 
     /*dropbox({
