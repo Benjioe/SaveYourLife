@@ -104,6 +104,7 @@ var decryptFile = function(pathFile) {
   var stream = r.pipe(decrypt).pipe(unzip).pipe(w);
 
   stream.on('finish', function(){
+    fs.unlinkSync("temp/"+file[file.length-1]);
     file.pop();
     if (file.length != 0) {
       decryptFile(file[file.length-1]);

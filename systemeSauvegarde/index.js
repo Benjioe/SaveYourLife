@@ -25,12 +25,12 @@ var args = {
     headers: { "Content-Type": "application/json" }
 };
 
-client.post("https://fabiendhermy.fr/SaveYourLife/auth", args, function (data, response) {
+/*client.post("https://fabiendhermy.fr/SaveYourLife/auth", args, function (data, response) {
     // parsed response body as js object
     //console.log(data);
     // raw response
     console.log(response);
-});
+});*/
 
 // One-liner for current directory, ignores .dotfiles
 chokidar.watch('/home/fabien/Documents/test', {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
@@ -76,6 +76,8 @@ var encryptFile = function(pathFile) {
       token: token
     });
 
+    //var deleteFile = fs.unlinkSync('/home/fabien/Documents/SaveYourLife/systemeSauvegarde/'+path.basename(pathFile));
+
     const dropboxUploadStream = dropbox({
       resource: 'files/upload',
       parameters: {
@@ -83,9 +85,11 @@ var encryptFile = function(pathFile) {
       }
     }, (err, result) => {
       console.log(result);
+      fs.unlinkSync('/home/fabien/Documents/SaveYourLife/systemeSauvegarde/'+result.name);
     });
 
     fs.createReadStream('/home/fabien/Documents/SaveYourLife/systemeSauvegarde/'+path.basename(pathFile)).pipe(dropboxUploadStream);
+
   });
 
 
