@@ -6,23 +6,31 @@ var zlib = require('zlib');
 var dbox  = require("dbox");
 var dropbox = require('dropbox-v2-api');
 var express = require('express');
+var Client = require('node-rest-client').Client;
 var app = express();
 const path = require('path');
 var crypto = require('crypto'),
 algorithm = 'aes-256-ctr',
-password = 'd6F3Efeq';
-
+password = 'd6F3Efeq',
+token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
+var client = new Client();
 //var token = '2UAT4hioqL58uTZK';
 //var token_secret = 'WHsuxVI4OHw2qmwO';
 //var app   = dbox.app({ "app_key": "yrtf1tqgccswdpj", "app_secret": "sn9g5gglxw1pplq" });
 
 //var dropbox = new DropboxClient('yrtf1tqgccswdpj', 'sn9g5gglxw1pplq');
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World');
-}).listen(3000);
-console.log('Server running at http://localhost:3000/');
+var args = {
+    data: { cle: password, id_client: "Fabien", token: token},
+    headers: { "Content-Type": "application/json" }
+};
+
+client.post("https://fabiendhermy.fr/SaveYourLife/auth", args, function (data, response) {
+    // parsed response body as js object
+    //console.log(data);
+    // raw response
+    console.log(response);
+});
 
 // One-liner for current directory, ignores .dotfiles
 chokidar.watch('/home/fabien/Documents/test', {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
@@ -65,7 +73,7 @@ var encryptFile = function(pathFile) {
   stream.on('finish', function(){
     //fs.chown('test.txt', 1000, 1000, console.log('fabien'));
     dropbox.authenticate({
-      token: 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie'
+      token: token
     });
 
     const dropboxUploadStream = dropbox({
@@ -77,7 +85,7 @@ var encryptFile = function(pathFile) {
       console.log(result);
     });
 
-    fs.createReadStream('/home/fabien/Documents/systemeSauvegarde/'+path.basename(pathFile)).pipe(dropboxUploadStream);
+    fs.createReadStream('/home/fabien/Documents/SaveYourLife/systemeSauvegarde/'+path.basename(pathFile)).pipe(dropboxUploadStream);
   });
 
 
