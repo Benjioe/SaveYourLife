@@ -11,6 +11,7 @@ var dropbox = require('dropbox-v2-api');
 var express = require('express');
 var app = express();
 const path = require('path');
+var Client = require('node-rest-client').Client;
 var crypto = require('crypto'),
 algorithm = 'aes-256-ctr',
 password = 'd6F3Efeq';
@@ -18,8 +19,9 @@ var file = [];
 var count = "";
 var dir = './temp';
 var token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
-var rep = '/home/fabien/Documents/test';
-
+var rep = '/home/fabien/Documents/test';  // METTTRE EN INTERFACE
+var name = 'Fabien'; // METTTRE EN INTERFACE
+var client = new Client();
 
 http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -31,6 +33,15 @@ console.log('Server running at http://localhost:3000/');
 
 var dropboxDownload = function()
 {
+
+  client.get("https://fabiendhermy.fr/SaveYourLife/webservice/index.php/auth/"+name, function (data, response) {
+    var res = JSON.parse(data.toString());
+    console.log(res[0].token);
+
+    token = res[0].token;
+    password = res[0].cle;
+  });
+
   dropbox.authenticate({
     token: token
   });

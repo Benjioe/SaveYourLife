@@ -1,6 +1,6 @@
 #!/usr/bin/env nodejs
 
-// POUR L'UPLOAD 
+// POUR L'UPLOAD
 
 var chokidar = require('chokidar');
 var http = require('http');
@@ -14,10 +14,10 @@ var app = express();
 const path = require('path');
 var crypto = require('crypto'),
 algorithm = 'aes-256-ctr',
-password = 'd6F3Efeq',
-token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie',
-rep = '/home/fabien/Documents/test',
-compte = "Fabien";
+password = 'd6F3Efeq', // METTTRE EN INTERFACE
+token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie', // METTTRE EN INTERFACE
+rep = '/home/fabien/Documents/test', // METTTRE EN INTERFACE
+compte = "Fabien"; // METTTRE EN INTERFACE
 var client = new Client();
 //var token = '2UAT4hioqL58uTZK';
 //var token_secret = 'WHsuxVI4OHw2qmwO';
@@ -30,12 +30,12 @@ var args = {
     headers: { "Content-Type": "application/json" }
 };
 
-/*client.post("https://fabiendhermy.fr/SaveYourLife/auth", args, function (data, response) {
+client.post("https://fabiendhermy.fr/SaveYourLife/webservice/index.php/auth", args, function (data, response) {
     // parsed response body as js object
     //console.log(data);
     // raw response
     console.log(response);
-});*/
+});
 
 // One-liner for current directory, ignores .dotfiles
 chokidar.watch('/home/fabien/Documents/test', {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
