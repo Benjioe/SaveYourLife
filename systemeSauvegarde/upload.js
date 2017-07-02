@@ -1,4 +1,7 @@
 #!/usr/bin/env nodejs
+
+// POUR L'UPLOAD
+
 var chokidar = require('chokidar');
 var http = require('http');
 var fs = require('fs');
@@ -6,109 +9,137 @@ var zlib = require('zlib');
 var dbox  = require("dbox");
 var dropbox = require('dropbox-v2-api');
 var express = require('express');
+var Client = require('node-rest-client').Client;
 var app = express();
 const path = require('path');
 var crypto = require('crypto'),
-
-
-exports.upload = upload;
-
-function upload(password, directory, token) {
-  algorithm = 'aes-256-ctr';
-
-  if(!password)
-    password = 'd6F3Efeq';
-
-    if(!directory)
-      directory = '/home/fabien/Documents/test';
-
-      var directoryEncrypt = directory + '/encrypt';
+algorithm = 'aes-256-ctr';
+const {ipcMain} = require('electron');
 
 
 
+const ignore = require('ignore');
+const ignoreFile = path.join(__dirname, '../.lifeignore');
 
-          if(!token)
-            token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
+//chokidar.unwatch([])
+function filter(listPath) {
+    return ignore()
+        .add(fs.readFileSync(ignoreFile).toString())
+        .filter(listPath).length > 0;
+}
 
-    //var token = '2UAT4hioqL58uTZK';
-    //var token_secret = 'WHsuxVI4OHw2qmwO';
-    //var app   = dbox.app({ "app_key": "yrtf1tqgccswdpj", "app_secret": "sn9g5gglxw1pplq" });
+//var token = '2UAT4hioqL58uTZK';
+//var token_secret = 'WHsuxVI4OHw2qmwO';
+//var app   = dbox.app({ "app_key": "yrtf1tqgccswdpj", "app_secret": "sn9g5gglxw1pplq" });
 
-    //var dropbox = new DropboxClient('yrtf1tqgccswdpj', 'sn9g5gglxw1pplq');
+//var dropbox = new DropboxClient('yrtf1tqgccswdpj', 'sn9g5gglxw1pplq');
 
-    http.createServer(function (req, res) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end('Hello World');
-    }).listen(3000);
-    console.log('Server running at http://localhost:3000/');
+exports.upload = function(account) {
 
-    // One-liner for current directory, ignores .dotfiles
-    chokidar.watch(directory, {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
-      console.log(event);
-      encryptFile(event);
-    });
+  console.log("upload");
 
-    chokidar.watch(directory, {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
-      console.log(event, path);
-      encryptFile(event);
-    });
+    var password = account.password,
+        token = account.token,
+        compte = account.compte,
+        rep = account.rep;
 
-    var encryptFile = function(pathFile) {
+  var client = new Client();
 
-      // input file
-      var r = fs.createReadStream(pathFile);
 
-      // zip content
-      var zip = zlib.createGzip();
+  var args = {
+      data: { cle: password, id_client: compte, token: token},
+      headers: { "Content-Type": "application/json" }
+  };
 
-      // encrypt content
-      var encrypt = crypto.createCipher(algorithm, password);
+  client.post("https://fabiendhermy.fr/SaveYourLife/webservice/index.php/auth", args, function (data, response) {
+      // parsed response body as js object
+      //console.log(data);
+      // raw response
+      console.log(response);
+  });
 
-      // decrypt content
-      var decrypt = crypto.createDecipher(algorithm, password)
+  // One-liner for current directory, ignores .dotfiles
+  chokidar.watch(rep, {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
+    console.log(event);
 
-      // unzip content
-      var unzip = zlib.createGunzip();
 
-      var options = { flags: 'w' };
-      // write file
-      var w = fs.createWriteStream(path.basename(pathFile));
 
-      //var chown = fs.chown('test.txt', 1000, 1000, console.log);
-      // start pipe
-      var stream = r.pipe(zip).pipe(encrypt).pipe(w);
+    encryptFile(event);
+  });
 
-      //console.log('nom du fichier: '+ path.basename(pathFile));
+  chokidar.watch(rep, {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
+    console.log(event, path);
+    encryptFile(event);
+  });
 
-      stream.on('finish', function(){
-        //fs.chown('test.txt', 1000, 1000, console.log('fabien'));
-        dropbox.authenticate({
-          token: token
-        });
+  var encryptFile = function(pathFile) {
 
-        const dropboxUploadStream = dropbox({
-          resource: 'files/upload',
-          parameters: {
-            path: '/dropbox/path/test/'+path.basename(pathFile)
-          }
-        }, (err, result) => {
-          console.log(result);
-        });
+    if(!filter(pathFile)) {
+      console.log("Ignore file : " + pathFile);
+      return;
+    }
 
-        fs.createReadStream(directoryEncrypt +path.basename(pathFile)).pipe(dropboxUploadStream);
+    console.log("Upload: " + pathFile);
+    return;
+
+
+    // input file
+    var r = fs.createReadStream(pathFile);
+
+    // zip content
+    var zip = zlib.createGzip();
+
+    // encrypt content
+    var encrypt = crypto.createCipher(algorithm, password);
+
+    // decrypt content
+    var decrypt = crypto.createDecipher(algorithm, password)
+
+    // unzip content
+    var unzip = zlib.createGunzip();
+
+    var options = { flags: 'w' };
+    // write file
+    var w = fs.createWriteStream(path.basename(pathFile));
+
+    //var chown = fs.chown('test.txt', 1000, 1000, console.log);
+    // start pipe
+    var stream = r.pipe(zip).pipe(encrypt).pipe(w);
+
+    //console.log('nom du fichier: '+ path.basename(pathFile));
+
+    stream.on('finish', function(){
+      //fs.chown('test.txt', 1000, 1000, console.log('fabien'));
+      dropbox.authenticate({
+        token: token
       });
 
 
+      const dropboxUploadStream = dropbox({
+        resource: 'files/upload',
+        parameters: {
+          path: '/dropbox/path/test/'+path.basename(pathFile)
+        }
+      }, (err, result) => {
+        console.log(result);
+        fs.unlinkSync(rep +result.name);
+      });
 
-    }
-    /*
-    var watcher = chokidar.watch('file, dir, glob, or array', {
-    ignored: /(^|[\/\\])\../,
-    persistent: true
+      fs.createReadStream(rep +path.basename(pathFile)).pipe(dropboxUploadStream);
+
     });
 
-    watcher
-    .on('add', path => console.log(`File ${path} has been added`))
-    .on('change', path => console.log(`File ${path} has been changed`))
-    */
+
+
+  }
 }
+
+/*
+var watcher = chokidar.watch('file, dir, glob, or array', {
+ignored: /(^|[\/\\])\../,
+persistent: true
+});
+watcher
+.on('add', path => console.log(`File ${path} has been added`))
+.on('change', path => console.log(`File ${path} has been changed`))
+*/

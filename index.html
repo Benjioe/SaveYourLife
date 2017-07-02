@@ -43,8 +43,10 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="#intro">Home</a></li>
         <li><a href="#start">Commencer</a></li>
-        <li><a href="#resto">Restauration</a></li>
-
+          <li><a href="#ignore">Ignorer les fichiers</a></li>
+          <li><a href="#sauvegarder">Sauvegarder</a></li>
+          <li><a href="#apercus">Apercus</a></li>
+          <li><a href="#resto">Restauration</a></li>
       </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -86,62 +88,76 @@
 		</div>
 
     <div class="container">
-      <div class="input-group input-group-lg">
-        <span class="input-group-addon" id="sizing-addon1">Compte : </span>
-        <input type="text" class="form-control" placeholder="exemple : rastapopoulos" aria-describedby="sizing-addon1">
-      </div>
-
-      <div class="">
-
-      </div>
-
-      <div class="input-group input-group-lg">
-        <span class="input-group-addon" id="sizing-addon1">Token : </span>
-        <input type="text" class="form-control" placeholder="exemple : rastapopoulos" aria-describedby="sizing-addon1">
-      </div>
-
-      <div class="">
-        <a href="https://temboo.com/nodejs/upload-to-dropbox" target="_bank">Perdu ?</a>
-        <button type="button" class="btn btn-default">Tester la connexion</button>
-      </div>
-
-      <div class="">
-        <button type="button" class="btn btn-default">Se connecter</button>
-      </div>
-
-      <div class="">
-          <input type="file" webkitdirectory directory multiple/>
-      </div>
-
-      <div class="input-group input-group-lg">
-        <span class="input-group-addon" id="sizing-addon1">Phrase secret : </span>
-        <input type="text" class="form-control" placeholder="exemple : rastapopoulos" aria-describedby="sizing-addon1">
-      </div>
-
-      <div class="">
-        <p>Avez vous des fichiers à proscrire ?</p>
-        <div class="">
-          <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="btn-fichier-proscrire">
-            Oui
-          </a>
-          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Non
-          </button>
-          <div class="collapse" id="collapseExample">
-            <div class="well">
-              <input type="file" webkitdirectory directory multiple/>
+        <form id="parametrage">
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="sizing-addon1">Compte : </span>
+                <input type="text" id="compte" class="form-control" placeholder="Compte" aria-describedby="sizing-addon1" required="true">
             </div>
-          </div>
-        </div>
+
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="sizing-addon1">Token : </span>
+                <input type="text" id="token" class="form-control" placeholder="Token" aria-describedby="sizing-addon1" required="true">
+            </div>
+
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon" id="sizing-addon1">Password : </span>
+                <input type="password" id="password" class="form-control" placeholder="Password" aria-describedby="sizing-addon1" required="true">
+            </div>
+
+            <div class="">
+                <span class="input-group-addon" id="sizing-addon1">Directory : </span>
+                <input type="text" id="rep" class="form-control" placeholder="Dossier" aria-describedby="sizing-addon1" required="true"/>
+            </div>
+            <input type="submit" value="Save" />
+        </form>
 
       </div>
+
+
     </div>
 	</section>
-	<!-- /Section: about -->
 
+    <section id="ignore" class="home-section text-center bg-gray">
+        <h2>Ignorer</h2>
+        <p>
+            SaveYourLife vous permet de ignore les fichiers qui doivent être sauvegarder.
+            Pour cela, il suffis d'editer le fichier .lifeignore.
+            Celui-ci utilise la même sysntaxe que le fichier .gitignore
+            <a href="https://git-scm.com/docs/gitignore">Syntaxe .gitignore</a>
+
+        </p>
+
+
+        <button type="button" class="btn btn-primary" onclick="OpenIgnoreFile()" style="margin-top:10px">Ouvrire le fichier .ignorefile</button>
+
+    </section>
+
+
+    <!-- /Section: about -->
+    <section id="sauvegarder" class="home-section text-center bg-gray">
+
+        <div class="heading-about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="wow bounceInDown" data-wow-delay="0.4s">
+                            <div class="section-heading">
+                                <h2>Sauvegarder</h2>
+                                <button id="save">Sauvegarde</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <!-- Afficher un écran avec toutes les information sur les fichiers qui ont été modifier!-->
+        </div>
+    </section>
 
 	<!-- Section: services -->
-    <section id="resto" class="home-section text-center bg-gray">
+    <section id="apercus" class="home-section text-center bg-gray">
 
 		<div class="heading-about">
 			<div class="container">
@@ -149,9 +165,8 @@
 				<div class="col-lg-8 col-lg-offset-2">
 					<div class="wow bounceInDown" data-wow-delay="0.4s">
 					<div class="section-heading">
-					<h2>Restauration</h2>
-					<i class="fa fa-2x fa-angle-down"></i>
-
+					<h2>Apercus</h2>
+                    <button id="load-apercus">Apercus</button>
 					</div>
 					</div>
 				</div>
@@ -163,6 +178,31 @@
 		</div>
 	</section>
 	<!-- /Section: services -->
+
+
+    <section id="resto" class="home-section text-center bg-gray">
+
+        <div class="heading-about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="wow bounceInDown" data-wow-delay="0.4s">
+                            <div class="section-heading">
+                                <h2>Restauration</h2>
+                                <button id="restore">Restaurer</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <!-- Afficher un écran avec toutes les information sur les fichiers qui ont été modifier!-->
+        </div>
+    </section>
+
+
 
 	<footer>
 		<div class="container">
@@ -197,9 +237,18 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script>if (window.module) module = window.module;</script>
-
+    <script src="render.js"></script>
 
     <script type="text/javascript">
+/*      var account = new Account(
+        $("#password").val()
+        ,$("token").val()
+        , $("rep").val()
+        ,  $("#compte").val()
+      );*/
+
+
+
 
     </script>
 

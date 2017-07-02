@@ -1,12 +1,9 @@
 const {app, BrowserWindow} = require('electron')
-
 const path = require('path')
 const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
-let document
 
 function createWindow () {
   // Create the browser window.
@@ -19,38 +16,8 @@ function createWindow () {
     slashes: true
   }))
 
-
-
-const processCrashBtn = win.document.getElementById('btn-fichier-proscrire');
-processCrashBtn.addEventListener('click', function (event) {
-  const crashWinPath = path.join('file://', __dirname, '../../sections/windows/process-crash.html')
-  let win = new BrowserWindow({ width: 400, height: 320 })
-
-  win.webContents.on('crashed', function () {
-    const options = {
-      type: 'info',
-      title: 'Renderer Process Crashed',
-      message: 'This process has crashed.',
-      buttons: ['Reload', 'Close']
-    }
-    dialog.showMessageBox(options, function (index) {
-      if (index === 0) win.reload()
-      else win.close()
-    })
-  })
-
-  win.on('close', function () { win = null })
-  win.loadURL(crashWinPath)
-  win.show()
-})
-
-
-
-
   // Open the DevTools.
-  //win.webContents.openDevTools()
-
-
+  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -60,9 +27,6 @@ processCrashBtn.addEventListener('click', function (event) {
     win = null
   })
 }
-
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

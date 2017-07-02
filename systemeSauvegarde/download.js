@@ -1,4 +1,7 @@
 #!/usr/bin/env nodejs
+
+// DOWNLOAD ET DECRYPT
+
 var chokidar = require('chokidar');
 var http = require('http');
 var fs = require('fs');
@@ -8,19 +11,22 @@ var dropbox = require('dropbox-v2-api');
 var express = require('express');
 var app = express();
 const path = require('path');
-var crypto = require('crypto'),
+var Client = require('node-rest-client').Client;
+var crypto = require('crypto');
+algorithm = 'aes-256-ctr';
+var file = [];
+var count = "";
 
-exports.download = download;
 
+var client = new Client();
 
-function download(password, token) {
-  algorithm = 'aes-256-ctr';
+exports.download = function(account, tmpDir)  {
+  var token = account.token;
+  var password = account.password;
+  var name = account.compte;
 
-  if(!password)
-    password = 'd6F3Efeq';
+  var dir = tmpDir;
 
-    if(!token)
-      token = 'XhKUuTYv0qAAAAAAAAAAD1jlocOTS4YOgOVgtnm3NdSJDhnxm2tmsyyVzY2K22ie';
 
   http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -32,6 +38,15 @@ function download(password, token) {
 
   var dropboxDownload = function()
   {
+
+    client.get("https://fabiendhermy.fr/SaveYourLife/webservice/index.php/auth/"+name, function (data, response) {
+      var res = JSON.parse(data.toString());
+      console.log(res[0].token);
+
+      token = res[0].token;
+      password = res[0].cle;
+    });
+
     dropbox.authenticate({
       token: token
     });
@@ -53,18 +68,32 @@ function download(password, token) {
     }, (err, response) => {
         if (err) { return console.log('err:', err); }
 
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+            fs.chown(dir, 1000, 1000, console.log('right'));
+        }
+
         for (var i = 0; i < response.entries.length; i++) {
           console.log(response.entries[i].name);
+          count = response.entries.length;
 
-          dropbox({
+          var stream = dropbox({
               resource: 'files/download',
               parameters: {
                   path: '/dropbox/path/test/'+response.entries[i].name
               }
           }, (err, result) => {
             console.log(result);
+            file.push(result.name);
           })
-          .pipe(fs.createWriteStream(response.entries[i].name));
+          .pipe(fs.createWriteStream("temp/"+response.entries[i].name));
+
+          stream.on('finish', function(){
+            console.log('finishWrite');
+            if (count == file.length) {
+              decryptFile(file[file.length-1]);
+            }
+          });
         }
     });
 
@@ -72,9 +101,10 @@ function download(password, token) {
 
   var decryptFile = function(pathFile) {
 
-  console.log("test");
+    console.log("test");
+    console.log(pathFile);
     // input file
-    var r = fs.createReadStream(pathFile);
+    var r = fs.createReadStream("temp/"+pathFile);
 
     // zip content
     var zip = zlib.createGzip();
@@ -89,18 +119,36 @@ function download(password, token) {
     var unzip = zlib.createUnzip();
 
     // write file
-    var w = fs.createWriteStream('result.odt');
+    var w = fs.createWriteStream(pathFile);
 
     //var chown = fs.chown('test.txt', 1000, 1000, console.log);
     // start pipe
     var stream = r.pipe(decrypt).pipe(unzip).pipe(w);
 
     stream.on('finish', function(){
-      console.log('finish');
+      fs.unlinkSync("temp/"+file[file.length-1]);
+      file.pop();
+      if (file.length != 0) {
+        decryptFile(file[file.length-1]);
+      }
+      else {
+        console.log('finish');
+
+      }
     });
     //console.log('nom du fichier: '+ path.basename(pathFile));
 
   }
   dropboxDownload();
-  //decryptFile('/home/fabien/Documents/systemeSauvegarde/test.odt');
 }
+
+//ToDO : chokidar.close() le temps de faire le replace ???
+exports.replace = function(account, tmpDir) {
+    var rep =  account.rep;
+
+
+
+}
+
+
+//decryptFile('/home/fabien/Documents/SaveYourLife/systemeSauvegarde/test.odt');

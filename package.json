@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
+    "build": "electron-packager . SaveYourLife --platform=linux",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,6 +25,7 @@
     "google-auth-library": "^0.10.0"
   },
   "devDependencies": {
+    "electron-packager": "^8.7.2",
     "electron-prebuilt": "^1.4.13"
   }
 }
