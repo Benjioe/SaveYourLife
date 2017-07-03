@@ -69,7 +69,7 @@ $('#parametrage').submit(function(ev) {
     ev.preventDefault(); // to stop the form from submitting
     /* Validations go here */
 
-    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val(), tmpDir);
+    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val(), tmpDir());
     //ipcRenderer.sendSync('parametrage', account);
 
 });
