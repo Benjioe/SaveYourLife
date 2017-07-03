@@ -34,7 +34,7 @@ function filter(listPath) {
 
 //var dropbox = new DropboxClient('yrtf1tqgccswdpj', 'sn9g5gglxw1pplq');
 
-exports.upload = function(account) {
+exports.upload = function(account, onALlFileUplozd) {
 
   console.log("upload");
 
@@ -58,31 +58,35 @@ exports.upload = function(account) {
       console.log(response);
   });
 
+  var nbFileTraite = 0;
+  function onFIleFinishe() {
+      nbFileTraite--;
+      if(nbFileTraite <= 0)
+          onALlFileUplozd();
+  }
+
+
   // One-liner for current directory, ignores .dotfiles
   chokidar.watch(rep, {ignored: /(^|[\/\\])\../}).on('add', (event, path) => {
     console.log(event);
 
 
-
-    encryptFile(event);
+      nbFileTraite++;
+    encryptFile(event, onFIleFinishe);
   });
 
   chokidar.watch(rep, {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
     console.log(event, path);
-    encryptFile(event);
+      nbFileTraite++;
+    encryptFile(event,onFIleFinishe);
   });
 
-  var encryptFile = function(pathFile) {
+  var encryptFile = function(pathFile, onFileFinished) {
 
     if(!filter(pathFile)) {
       console.log("Ignore file : " + pathFile);
       return;
     }
-
-    console.log("Upload: " + pathFile);
-    return;
-
-
     // input file
     var r = fs.createReadStream(pathFile);
 
@@ -123,6 +127,7 @@ exports.upload = function(account) {
       }, (err, result) => {
         console.log(result);
         fs.unlinkSync(rep +result.name);
+        onFileFinished();
       });
 
       fs.createReadStream(rep +path.basename(pathFile)).pipe(dropboxUploadStream);

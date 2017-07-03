@@ -50,7 +50,7 @@ $('#parametrage').submit(function(ev) {
 $("#save").click(function(ev) {
     ev.preventDefault();
     account.getAccount((paramAccount) => {
-        upload.upload(paramAccount);
+        upload.upload(paramAccount, () => {alert('File upload'); });
     });
 
 });

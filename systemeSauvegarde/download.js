@@ -104,7 +104,7 @@ exports.download = function(account, tmpDir)  {
     console.log("test");
     console.log(pathFile);
     // input file
-    var r = fs.createReadStream("temp/"+pathFile);
+    var r = fs.createReadStream(tmpDir+pathFile);
 
     // zip content
     var zip = zlib.createGzip();
