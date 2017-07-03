@@ -16,7 +16,7 @@ var crypto = require('crypto');
 algorithm = 'aes-256-ctr';
 var file = [];
 var count = "";
-
+var dirFinal = "";
 
 var client = new Client();
 
@@ -26,7 +26,7 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
   var name = account.compte;
   console.log(name);
   var dir = tmpDir+"/";
-
+  dirFinal = dossierDestination;
 
   http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -119,7 +119,7 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
     var unzip = zlib.createUnzip();
 
     // write file
-    var w = fs.createWriteStream(pathFile);
+    var w = fs.createWriteStream(dirFinal + pathFile);
 
     //var chown = fs.chown('test.txt', 1000, 1000, console.log);
     // start pipe
