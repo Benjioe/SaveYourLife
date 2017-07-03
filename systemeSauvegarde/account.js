@@ -35,7 +35,7 @@ exports.getAccount = function(handler) {
         handler(account);
 }
 
-exports.CreateAccount = function (password,token, compte, rep) {
+exports.CreateAccount = function (password,token, compte, rep, tmpRep) {
 //password = 'd6F3Efeq', // METTTRE EN INTERFACE
 
     if(!password)
@@ -55,7 +55,8 @@ exports.CreateAccount = function (password,token, compte, rep) {
         password: password,
         token: token,
         compte: compte,
-        rep:rep
+        rep:rep,
+        tmpRep: tmpRep
     }
 
     fs.writeFile(pathAccount, JSON.stringify(account), (err) => {
