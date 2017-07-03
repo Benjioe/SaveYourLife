@@ -99,6 +99,7 @@ $("#load-apercus").click(function(ev) {
 $("#restore").click(function(ev) {
     ev.preventDefault();
     account.getAccount((paramAccount) => {
-        download.replace(paramAccount, tmpDir());
+        download.download(paramAccount, tmpDir(), () => {
+        }, dossierDestination());
     });
 });
