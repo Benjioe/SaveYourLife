@@ -24,8 +24,8 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
   var token = account.token;
   var password = account.password;
   var name = account.compte;
-
-  var dir = tmpDir;
+  console.log(name);
+  var dir = tmpDir+"/";
 
 
   http.createServer(function (req, res) {
@@ -43,8 +43,8 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
       var res = JSON.parse(data.toString());
       console.log(res[0].token);
 
-      token = res[0].token;
-      password = res[0].cle;
+      //token = res[0].token;
+      //password = res[0].cle;
     });
 
     dropbox.authenticate({
@@ -101,17 +101,17 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
 
   var decryptFile = function(pathFile) {
 
-    console.log("test");
-    console.log(pathFile);
+    //console.log("test");
+    console.log(tmpDir+"/"+pathFile);
     // input file
-    var r = fs.createReadStream(tmpDir+pathFile);
+    var r = fs.createReadStream(tmpDir+"/"+pathFile);
 
     // zip content
     var zip = zlib.createGzip();
 
     // encrypt content
     var encrypt = crypto.createCipher(algorithm, password);
-
+    console.log(password);
     // decrypt content
     var decrypt = crypto.createDecipher(algorithm, password)
 
@@ -126,7 +126,7 @@ exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
     var stream = r.pipe(decrypt).pipe(unzip).pipe(w);
 
     stream.on('finish', function(){
-      fs.unlinkSync("temp/"+file[file.length-1]);
+      //fs.unlinkSync(tmpDir+file[file.length-1]);
       file.pop();
       if (file.length != 0) {
         decryptFile(file[file.length-1]);

@@ -88,6 +88,7 @@ exports.upload = function(account, onALlFileUplozd) {
       return;
     }*/
     // input file
+    console.log(password);
     var r = fs.createReadStream(pathFile);
 
     // zip content
