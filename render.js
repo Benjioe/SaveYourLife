@@ -14,6 +14,8 @@ var path = require('path')
 var paramAccount;
 var tmpDir =   path.join(__dirname, "/tmp"); //os.platform
 
+var delimitatorFilePath = process.platform == "win32" ? "\\" : "/";
+
 
 function OpenIgnoreFile() {
     var fileIgnore = path.join(__dirname, '.lifeignore');
@@ -33,6 +35,17 @@ $(document).ready(function(){
     catch(err) {
         console.log(err);
     }
+
+});
+
+$("#select-directory").click(function() {
+    dialog.showOpenDialog({properties: ['openDirectory']}, (filePath) => {
+        var filePathFormat = filePath;
+
+        if(filePathFormat.slice(-1) != delimitatorFilePath)
+            filePathFormat += delimitatorFilePath;
+        $("#rep").val(filePathFormat);
+    });
 
 });
 
