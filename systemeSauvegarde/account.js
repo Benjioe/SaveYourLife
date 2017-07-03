@@ -56,7 +56,7 @@ exports.CreateAccount = function (password,token, compte, rep, tmpRep) {
         token: token,
         compte: compte,
         rep:rep,
-        tmpRep: tmpRep
+        destinationDir: tmpRep
     }
 
     fs.writeFile(pathAccount, JSON.stringify(account), (err) => {
