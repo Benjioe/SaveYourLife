@@ -86,7 +86,7 @@ exports.download = function(account, tmpDir)  {
             console.log(result);
             file.push(result.name);
           })
-          .pipe(fs.createWriteStream("temp/"+response.entries[i].name));
+          .pipe(fs.createWriteStream(dir+response.entries[i].name));
 
           stream.on('finish', function(){
             console.log('finishWrite');
