@@ -50,6 +50,9 @@ exports.CreateAccount = function (password,token, compte, rep) {
     if(!rep)
         rep = "/home/fabien/Documents/SaveYourLife/systemeSauvegarde/";
 
+    //if(rep.slice(-1) != '/')
+      //  rep += '/';
+
     account =  {
         password: password,
         token: token,
