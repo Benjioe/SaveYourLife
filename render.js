@@ -12,7 +12,10 @@ var shell = require('electron').shell;
 var path = require('path')
 
 var paramAccount;
-var tmpDir =   path.join(__dirname, "/tmp"); //os.platform
+var tmpDir =  function() {
+    //path.join(__dirname, "/tmp"); //os.platform
+    return $("#rep-tmp").val();
+}
 
 var delimitatorFilePath = process.platform == "win32" ? "\\" : "/";
 
@@ -29,6 +32,7 @@ $(document).ready(function(){
             $("#token").val(acc.token);
             $("#compte").val(acc.compte);
             $("#rep").val(acc.rep);
+            $("#rep-tmp").val(acc.tmpRep);
         });
 
     }
@@ -50,11 +54,22 @@ $("#select-directory").click(function() {
 });
 
 
+$("#select-directory-tmp").click(function() {
+    dialog.showOpenDialog({properties: ['openDirectory']}, (filePath) => {
+        var filePathFormat = filePath;
+
+        if(filePathFormat.slice(-1) != delimitatorFilePath)
+            filePathFormat += delimitatorFilePath;
+        $("#rep-tmp").val(filePathFormat);
+    });
+
+});
+
 $('#parametrage').submit(function(ev) {
     ev.preventDefault(); // to stop the form from submitting
     /* Validations go here */
 
-    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val());
+    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val(), tmpDir);
     //ipcRenderer.sendSync('parametrage', account);
 
 });
@@ -71,8 +86,10 @@ $("#save").click(function(ev) {
 $("#load-apercus").click(function(ev) {
     ev.preventDefault();
     account.getAccount((paramAccount) => {
-        download.download(paramAccount, tmpDir);
-        dialog.showOpenDialog({defaultPath: tmpDir});
+        dialog.showOpenDialog({defaultPath: tmpDir()});
+        download.download(paramAccount, tmpDir(), () => {
+            dialog.showOpenDialog({defaultPath: tmpDir()});
+        });
     });
 
 });
@@ -80,6 +97,6 @@ $("#load-apercus").click(function(ev) {
 $("#restore").click(function(ev) {
     ev.preventDefault();
     account.getAccount((paramAccount) => {
-        download.replace(paramAccount, tmpDir);
+        download.replace(paramAccount, tmpDir());
     });
 });

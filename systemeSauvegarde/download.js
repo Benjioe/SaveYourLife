@@ -20,7 +20,7 @@ var count = "";
 
 var client = new Client();
 
-exports.download = function(account, tmpDir)  {
+exports.download = function(account, tmpDir, onFinished)  {
   var token = account.token;
   var password = account.password;
   var name = account.compte;
@@ -133,7 +133,7 @@ exports.download = function(account, tmpDir)  {
       }
       else {
         console.log('finish');
-
+          onFinished();
       }
     });
     //console.log('nom du fichier: '+ path.basename(pathFile));
