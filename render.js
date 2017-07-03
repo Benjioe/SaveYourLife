@@ -35,7 +35,7 @@ $(document).ready(function(){
             $("#token").val(acc.token);
             $("#compte").val(acc.compte);
             $("#rep").val(acc.rep);
-            $("#rep-tmp").val(acc.tmpRep);
+            $("#rep-tmp").val(acc.dossierDestination);
         });
 
     }
@@ -72,7 +72,7 @@ $('#parametrage').submit(function(ev) {
     ev.preventDefault(); // to stop the form from submitting
     /* Validations go here */
 
-    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val(), tmpDir());
+    account.CreateAccount($("#password").val(), $("#token").val(), $("#compte").val(), $("#rep").val(), dossierDestination());
     //ipcRenderer.sendSync('parametrage', account);
 
 });
