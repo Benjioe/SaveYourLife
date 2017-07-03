@@ -20,7 +20,7 @@ var count = "";
 
 var client = new Client();
 
-exports.download = function(account, tmpDir, onFinished)  {
+exports.download = function(account, tmpDir, onFinished, dossierDestination)  {
   var token = account.token;
   var password = account.password;
   var name = account.compte;

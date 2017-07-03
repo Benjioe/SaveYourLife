@@ -13,7 +13,10 @@ var path = require('path')
 
 var paramAccount;
 var tmpDir =  function() {
-    //path.join(__dirname, "/tmp"); //os.platform
+    return path.join(__dirname, "/tmp");
+}
+
+var dossierDestination = function() {
     return $("#rep-tmp").val();
 }
 
@@ -88,7 +91,7 @@ $("#load-apercus").click(function(ev) {
     account.getAccount((paramAccount) => {
         download.download(paramAccount, tmpDir(), () => {
             dialog.showOpenDialog({defaultPath: tmpDir()});
-        });
+        }, dossierDestination());
     });
 
 });
