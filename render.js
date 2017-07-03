@@ -35,7 +35,7 @@ $(document).ready(function(){
             $("#token").val(acc.token);
             $("#compte").val(acc.compte);
             $("#rep").val(acc.rep);
-            $("#rep-tmp").val(acc.dossierDestination);
+            $("#rep-tmp").val(acc.destinationDir);
         });
 
     }
