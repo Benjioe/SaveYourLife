@@ -71,8 +71,9 @@ $("#save").click(function(ev) {
 $("#load-apercus").click(function(ev) {
     ev.preventDefault();
     account.getAccount((paramAccount) => {
-        download.download(paramAccount, tmpDir);
-        dialog.showOpenDialog({defaultPath: tmpDir});
+        download.download(paramAccount, tmpDir, () => {
+            dialog.showOpenDialog({defaultPath: tmpDir});
+        });
     });
 
 });
