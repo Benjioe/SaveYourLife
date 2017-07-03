@@ -25,6 +25,7 @@
     "google-auth-library": "^0.10.0"
   },
   "devDependencies": {
+    "electron": "^1.6.11",
     "electron-packager": "^8.7.2",
     "electron-prebuilt": "^1.4.13"
   }

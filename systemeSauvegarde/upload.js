@@ -15,7 +15,7 @@ const path = require('path');
 var crypto = require('crypto'),
 algorithm = 'aes-256-ctr';
 const {ipcMain} = require('electron');
-
+var dir = "tempUpload/";
 
 
 const ignore = require('ignore');
@@ -72,21 +72,21 @@ exports.upload = function(account, onALlFileUplozd) {
 
 
       nbFileTraite++;
-    encryptFile(event, onFIleFinishe);
+    encryptFile(event);
   });
 
   chokidar.watch(rep, {ignored: /(^|[\/\\])\../}).on('change', (event, path) => {
     console.log(event, path);
       nbFileTraite++;
-    encryptFile(event,onFIleFinishe);
+    encryptFile(event);
   });
 
   var encryptFile = function(pathFile, onFileFinished) {
 
-    if(!filter(pathFile)) {
+    /*if(!filter(pathFile)) {
       console.log("Ignore file : " + pathFile);
       return;
-    }
+    }*/
     // input file
     var r = fs.createReadStream(pathFile);
 
@@ -104,10 +104,15 @@ exports.upload = function(account, onALlFileUplozd) {
 
     var options = { flags: 'w' };
     // write file
-    var w = fs.createWriteStream(path.basename(pathFile));
+    var w = fs.createWriteStream(rep+dir+path.basename(pathFile));
 
     //var chown = fs.chown('test.txt', 1000, 1000, console.log);
     // start pipe
+    if (!fs.existsSync(rep + dir)){
+        fs.mkdirSync(rep + dir);
+        fs.chown(rep + dir, 1000, 1000, console.log('right'));
+    }
+
     var stream = r.pipe(zip).pipe(encrypt).pipe(w);
 
     //console.log('nom du fichier: '+ path.basename(pathFile));
@@ -126,11 +131,11 @@ exports.upload = function(account, onALlFileUplozd) {
         }
       }, (err, result) => {
         console.log(result);
-        fs.unlinkSync(rep +result.name);
-        onFileFinished();
+        fs.unlinkSync(rep + dir +result.name);
+        //onFileFinished();
       });
 
-      fs.createReadStream(rep +path.basename(pathFile)).pipe(dropboxUploadStream);
+      fs.createReadStream(rep + dir + path.basename(pathFile)).pipe(dropboxUploadStream);
 
     });
 
