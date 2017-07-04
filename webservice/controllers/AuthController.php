@@ -8,8 +8,8 @@ class AuthController
     $pdo = new bdd();
     if(isset($request->url_elements[2]) && $request->url_elements[2] != '') {
       // GET ONE AUTH
-      $id_reservation = (int)$request->url_elements[2];
-      $data =  $pdo->select('SELECT * FROM auth WHERE id_client = ' . $id_reservation);
+      $id_reservation = $request->url_elements[2];
+      $data =  $pdo->select('SELECT * FROM auth WHERE id_client = "' . $id_reservation . ' " '  );
       if ($data == []) {
         header("HTTP/1.1 404 Client Not Found");
       } else {
