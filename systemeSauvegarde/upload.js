@@ -105,13 +105,13 @@ exports.upload = function(account, onALlFileUplozd) {
 
     var options = { flags: 'w' };
     // write file
-    var w = fs.createWriteStream(rep+dir+path.basename(pathFile));
+    var w = fs.createWriteStream(dir+path.basename(pathFile));
 
     //var chown = fs.chown('test.txt', 1000, 1000, console.log);
     // start pipe
-    if (!fs.existsSync(rep + dir)){
-        fs.mkdirSync(rep + dir);
-        fs.chown(rep + dir, 1000, 1000, console.log('right'));
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+        fs.chown(dir, 1000, 1000, console.log('right'));
     }
 
     var stream = r.pipe(zip).pipe(encrypt).pipe(w);
@@ -132,11 +132,11 @@ exports.upload = function(account, onALlFileUplozd) {
         }
       }, (err, result) => {
         console.log(result);
-        fs.unlinkSync(rep + dir +result.name);
+        fs.unlinkSync(dir +result.name);
         //onFileFinished();
       });
 
-      fs.createReadStream(rep + dir + path.basename(pathFile)).pipe(dropboxUploadStream);
+      fs.createReadStream(dir + path.basename(pathFile)).pipe(dropboxUploadStream);
 
     });
 
